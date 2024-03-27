@@ -187,8 +187,11 @@ exports.updateProfilePrivacy = async (req, res) => {
     // Save updated user profile
     await user.save();
 
-    // Respond with success message
-    res.json({ message: "Profile privacy setting updated successfully" });
+    res.status(200).send({
+      statusCode: 200,
+      message: "Profile privacy updated successfully",
+      success: true,
+    });
   } catch (err) {
     console.error(error);
     res.status(500).send({
@@ -232,7 +235,7 @@ exports.getAllProfilesForAdmin = async (req, res) => {
     // Respond with user profiles
     res.json({ users });
   } catch (err) {
-    console.error(error);
+    console.error(err);
     res.status(500).send({
       message: "Internal server error",
       statusCode: 500,
@@ -268,7 +271,7 @@ exports.getPublicProfilesForNormalUser = async (req, res) => {
       success: true,
     })
   } catch (err) {
-    console.error(error);
+    console.error(err);
     res.status(500).send({
       message: "Internal server error",
       statusCode: 500,

@@ -80,7 +80,7 @@ module.exports = (app) => {
    * @param {Function} authMiddleware.verifyToken - Middleware to authenticate user token.
    * @param {Function} userController.getAllProfilesForAdmin - Controller for getting all user profiles for admin users.
    */
-  app.get("/v1/profile", authMiddleware.verifyToken, userController.getAllProfilesForAdmin);
+  app.get("/v1/profiles/", authMiddleware.verifyToken, userController.getAllProfilesForAdmin);
 
   /**
    * Route for getting user profiles (public only) for normal users.
