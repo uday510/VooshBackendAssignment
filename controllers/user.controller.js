@@ -72,8 +72,16 @@ exports.updateProfile = async (req, res) => {
     // Save updated user profile
     await user.save();
 
-    // Respond with updated profile details
-    res.json({ profile: user.profile });
+    // remove password
+    user.password = undefined;
+
+    res.status(200).send({
+      data: user,
+      message: "Profile updated successfully",
+      success: true,
+      statusCode: 200
+    })
+   
   } catch (err) {
     // Handle error
     console.error(err.message);
