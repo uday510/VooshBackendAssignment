@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
 const config = require("../configs/auth.config");
+const Util = require("../utils/util");
 
 /**
  * Controller for user signup.
@@ -32,24 +33,38 @@ exports.signup = async (req, res) => {
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Create new user
+        const social = {
+            provider: Util.LOGIN_PROVIDER.EMAIL,
+            socialId: email
+        }
+
+        const profile = {
+            name,
+            photo,
+            bio,
+            phone,
+            privacy: req.body.privacy || Util.PROFILE_TYPE.PUBLIC
+        }
+
         const newUser = new User({
             email,
             password: hashedPassword,
-            profile: {
-                photo,
-                name,
-                bio,
-                phone
-            }
-        });
+            social,
+            profile,
+            role: req.body.role || Util.USER_TYPE.USER
+        })
 
         // Save user to database
         await newUser.save();
 
         res.status(201).json({
             message: "User created successfully",
-            data: newUser,
+            data: {
+                email: newUser.email,
+                social: newUser.social,
+                profile: newUser.profile,
+                role: newUser.role
+            },
             statusCode: 200,
             success: true,
         });
@@ -102,6 +117,16 @@ exports.signin = async (req, res) => {
             });
         }
 
+        // Check the type of login (email or google)
+
+        if (user.social.provider === "google") { 
+            return res.status(400).send({
+                statusCode: 400,
+                message: "Failed! Please login with Google",
+                success: false,
+            });
+        }
+        
         // Check if the entered password matches the stored hashed password
         const isPasswordValid = bcrypt.compareSync(req.body.password, user.password);
 
@@ -115,14 +140,12 @@ exports.signin = async (req, res) => {
         }
 
         // Generate JWT token
-        const token = generateToken(user.userId);
+        const token = this.generateToken(user.userId);
 
         // Send success response with token
         res.status(200).send({
             statusCode: 200,
             data: {
-                name: user.name,
-                userId: user.userId,
                 email: user.email,
                 accessToken: token,
                 type: user.type,
@@ -148,7 +171,7 @@ exports.signin = async (req, res) => {
  * @param {string} userId - User ID for which the token is generated.
  * @returns {string} Generated JWT token.
  */
-function generateToken(userId) {
+exports.generateToken = (userId) => {
     return jwt.sign({ id: userId }, config.secret, {
         expiresIn: TOKEN_EXPIRATION_TIME_SECONDS
     });
@@ -172,7 +195,9 @@ exports.logout = (req, res) => {
         }
 
         // Add the token to the blacklisted tokens array
-        blacklistedTokens.push(token);
+        if (!this.blacklistedTokens.includes(token)) {
+            this.blacklistedTokens.push(token);
+        }
 
         res.json({ message: "Logout successful" });
     } catch (error) {

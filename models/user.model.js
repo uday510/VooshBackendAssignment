@@ -28,16 +28,11 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
     },
-    social: [{
-        provider: {
-            type: String,
-        },
-        socialId: {
-            type: String,
-        }
-    }],
+    social: {
+        provider: String,
+        socialId: String
+    },
     profile: {
         photo: String,
         name: String,

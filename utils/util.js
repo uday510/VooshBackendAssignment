@@ -46,3 +46,9 @@ exports.PROFILE_TYPE = {
     PUBLIC: 'public',
     PRIVATE: 'private',
 };
+
+exports.LOGIN_PROVIDER = {
+    GOOGLE: 'google',
+    FACEBOOK: 'facebook',
+    LOCAL: 'local',
+};

@@ -36,7 +36,7 @@ module.exports = (app) => {
      * @param {Function} authUser.validateSigninRequest - Middleware to validate signin request.
      * @param {Function} authController.signin - Controller for user login.
      */
-    // app.post("/v1/auth/login", [authUser.validateSigninRequest], authController.signin);
+    app.post("/v1/auth/login", [authUser.validateSigninRequest], authController.signin);
 
     /**
      * Route for user logout.
@@ -49,5 +49,5 @@ module.exports = (app) => {
      * @param {Object} req - Express request object.
      * @param {Object} res - Express response object.
      */
-    app.post("/v1/auth/logout", authController.logout);
+    app.get("/v1/auth/logout", authController.logout);
 };
