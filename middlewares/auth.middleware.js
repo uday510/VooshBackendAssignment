@@ -31,9 +31,9 @@ validateSigninRequest = (req, res, next) => {
  * @param {function} next - Next middleware function.
  */
 validateSignupRequest = async (req, res, next) => {
-    if (!req.body.email || !req.body.password) {
+    if (!req.body.email || !req.body.password || !req.body.userId) {
         return res.status(400).send({
-            message: "Failed! email, name and password are required.",
+            message: "Failed! email, userId and password are required.",
             statusCode: 400,
         });
     }

@@ -72,6 +72,7 @@ const initializeGoogleAuth = (app) => {
 
       const { email, picture } = req.user;
       const name = req.user.displayName;
+      const userId = req.user.id;
 
       const social = {
         provider: Util.LOGIN_PROVIDER.GOOGLE,
@@ -86,6 +87,7 @@ const initializeGoogleAuth = (app) => {
 
       const newUser = new User({
         email,
+        userId,
         social,
         profile,
         role: Util.USER_TYPE.USER

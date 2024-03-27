@@ -1,4 +1,3 @@
-const passport = require('passport');
 const authController = require("../controllers/auth.controller");
 const { authUser } = require("../middlewares/index");
 

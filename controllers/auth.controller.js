@@ -22,12 +22,16 @@ exports.blacklistedTokens = [];
 
 exports.signup = async (req, res) => {
     try {
-        const { name, email, password, photo, bio, phone } = req.body;
+        const { name, email, password, photo, bio, phone, userId } = req.body;
 
         // Check if email is already registered
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).json({ message: "Email already exists" });
+            return res.status(400).send({
+                message: "Email already exists",
+                success: false,
+                statusCode: 400,
+            });
         }
 
         // Hash password
@@ -48,6 +52,7 @@ exports.signup = async (req, res) => {
 
         const newUser = new User({
             email,
+            userId,
             password: hashedPassword,
             social,
             profile,
@@ -57,9 +62,10 @@ exports.signup = async (req, res) => {
         // Save user to database
         await newUser.save();
 
-        res.status(201).json({
+        res.status(201).send({
             message: "User created successfully",
             data: {
+                userId: newUser.userId,
                 email: newUser.email,
                 social: newUser.social,
                 profile: newUser.profile,
@@ -70,7 +76,7 @@ exports.signup = async (req, res) => {
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({
+        res.status(500).send({
             message: "Server Error",
             statusCode: 500,
             success: false
@@ -89,7 +95,7 @@ exports.googleLogin = (req, res) => {
     if (req.user) {
         res.send(`Welcome, ${req.user.email}!`);
     } else {
-        res.status(401).json({
+        res.status(401).send({
             message: "Unauthorized",
             statusCode: 401,
             success: false
@@ -191,7 +197,7 @@ exports.logout = (req, res) => {
 
         // Check if the token exists
         if (!token) {
-            return res.status(400).json({ message: "Token not provided" });
+            return res.status(400).send({ message: "Token not provided" });
         }
 
         // Add the token to the blacklisted tokens array
@@ -199,10 +205,10 @@ exports.logout = (req, res) => {
             this.blacklistedTokens.push(token);
         }
 
-        res.json({ message: "Logout successful" });
+        res.send({ message: "Logout successful" });
     } catch (error) {
         console.error("Error logging out user:", error);
-        res.status(500).json({ message: "Server Error" });
+        res.status(500).send({ message: "Server Error" });
     }
 };
 
