@@ -26,7 +26,7 @@ const initializeGoogleAuth = (app) => {
     clientID: "1008367810267-crnc3cc1c9nbkdjj49paobq1o3fm8c7j.apps.googleusercontent.com",
     clientSecret: "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",
     // callbackURL: "http://localhost:4000/auth/callback",
-    callbackURL: "https://api.udayteja.com//auth/callback",
+    callbackURL: "https://api.udayteja.com/auth/callback",
     passReqToCallback: true
   },
     function (request, accessToken, refreshToken, profile, done) {
