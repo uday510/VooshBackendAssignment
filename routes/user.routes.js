@@ -94,5 +94,5 @@ module.exports = (app) => {
    * @param {Object} res - Express response object.
    * @param {Function} userController.getPublicProfilesForNormalUser - Controller for getting public user profiles for normal users.
    */
-  app.get("/v1/profiles/public", userController.getPublicProfilesForNormalUser);
+  app.get("/v1/profiles/public", authMiddleware.verifyToken, userController.getPublicProfilesForNormalUser);
 };

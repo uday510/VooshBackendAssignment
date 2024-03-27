@@ -92,6 +92,7 @@ verifyToken = (req, res, next) => {
                 success: false,
             });
         }
+
         req.userId = decoded.id;
         next();
     });

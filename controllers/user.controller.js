@@ -81,7 +81,7 @@ exports.updateProfile = async (req, res) => {
       success: true,
       statusCode: 200
     })
-   
+
   } catch (err) {
     // Handle error
     console.error(err.message);
@@ -106,7 +106,7 @@ exports.uploadPhoto = async (req, res) => {
     // Retrieve user profile based on authenticated user's ID
     const user = await User.findOne({ userId: req.userId });
 
-    if (!req.body.photo) { 
+    if (!req.body.photo) {
       return res.status(400).send({
         statusCode: 400,
         message: "Photo is required",
@@ -157,7 +157,7 @@ exports.updateProfilePrivacy = async (req, res) => {
   try {
     // Retrieve user profile based on authenticated user's ID
     const user = await User.findOne({ userId: req.userId });
-    if (!req.body.privacy) { 
+    if (!req.body.privacy) {
       return res.status(400).send({
         statusCode: 400,
         message: "Privacy is required",
@@ -171,7 +171,7 @@ exports.updateProfilePrivacy = async (req, res) => {
         message: "Invalid privacy setting",
         success: false,
       })
-     }
+    }
 
     if (!user) {
       return res.status(404).send({
@@ -213,9 +213,12 @@ exports.getAllProfilesForAdmin = async (req, res) => {
   try {
     // Check if the current user is an admin
 
+    console.log(req.userId);
     const user = await User.findOne({ userId: req.userId });
 
-    if (user.role !== Util.USER_TYPE.ADMIN) { 
+    console.log(user);
+
+    if (user.role !== Util.USER_TYPE.ADMIN) {
       return res.status(403).send({
         statusCode: 403,
         message: "Unauthorized",
@@ -258,11 +261,10 @@ exports.getPublicProfilesForNormalUser = async (req, res) => {
     const users = await User.find({ 'profile.privacy': 'public' });
 
     //  remove password from user object
-
     users.forEach(user => {
       user.password = undefined;
     });
-    
+
     // Respond with public user profiles
     res.status(200).send({
       data: users,
